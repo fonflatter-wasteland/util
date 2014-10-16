@@ -4,7 +4,8 @@ set -e
 
 : ${OUTPUT_DIR:?}
 
-INPUT_REPO=`git config --get remote.github.url | sed -r 's,^(https://github\.com/|git@github\.com:),,' | sed -r 's,\.git$,,'`
+REMOTE_NAME=`git remote | head -n 1`
+INPUT_REPO=`git config --get remote.$REMOTE_NAME.url | sed -r 's,^(https://github\.com/|git@github\.com:),,' | sed -r 's,\.git$,,'`
 COMMIT_HASH=`git log -1 --pretty='%H'`
 COMMIT_MESSAGE=`git log -1 --pretty='%B'`
 
