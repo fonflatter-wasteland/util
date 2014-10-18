@@ -1,0 +1,5 @@
+[user]
+    name = fredobot
+    email = fredobot@winniehell.de
+[push]
+    default = simple
