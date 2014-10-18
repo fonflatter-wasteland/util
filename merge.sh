@@ -1,23 +1,31 @@
 #!/usr/bin/env bash
 
-set -e
+set -o nounset
+set -o errexit
 
-: ${OUTPUT_DIR:?}
+: ${TARGET_REPO_DIR:?}
+: ${TRAVIS_BUILD_DIR:?}
+: ${TRAVIS_COMMIT:?}
+: ${TRAVIS_REPO_SLUG:?}
 
-REMOTE_NAME=`git remote | head -n 1`
-INPUT_REPO=`git config --get remote.$REMOTE_NAME.url | sed -r 's,^.*github\.com(:|/),,' | sed -r 's,\.git$,,'`
-COMMIT_HASH=`git log -1 --pretty='%H'`
-COMMIT_MESSAGE=`git log -1 --pretty='%B'`
+cd "$TRAVIS_BUILD_DIR"
+BRANCH_NAME=$TRAVIS_REPO_SLUG
 
-# transfer content from input to output
-git remote add output $OUTPUT_DIR
-git branch input $COMMIT_HASH
-git push output input
-git branch -d input
-git remote rm output
+# transfer content to target repo
+git branch "$BRANCH_NAME" "$TRAVIS_COMMIT"
+git remote add target "$TARGET_REPO_DIR"
+git push target "$BRANCH_NAME"
+git branch -D "$BRANCH_NAME"
+git remote rm target
 
-# merge content and upload output
-cd $OUTPUT_DIR
-git merge --no-ff -m "$INPUT_REPO: $COMMIT_MESSAGE" input
-git branch -d input
+cd "$TARGET_REPO_DIR"
+COMMIT_MESSAGE=`git log -1 --pretty='%B' "$TRAVIS_COMMIT"`
+
+# merge content leaving auch dotfiles and README
+git merge --no-ff --no-commit "$BRANCH_NAME"
+git branch -D "$BRANCH_NAME"
+git rm -rf --ignore-unmatch .[!.]* README.md
+git commit --allow-empty -m "${TRAVIS_REPO_SLUG}: $COMMIT_MESSAGE"
+
+# upload the result
 git push
