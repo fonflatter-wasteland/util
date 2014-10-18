@@ -24,7 +24,7 @@ COMMIT_MESSAGE=`git log -1 --pretty='%B' "$TRAVIS_COMMIT"`
 # merge content leaving auch dotfiles and README
 git merge --no-ff --no-commit --strategy=recursive --strategy-option=theirs "$BRANCH_NAME"
 git branch -D "$BRANCH_NAME"
-find . -maxdepth 1 \( -name '.[!.]*' -o -name 'README.md' \) -exec git reset HEAD -- {} \;
+git reset HEAD -- .[!.]* README.md
 git commit --allow-empty -m "${TRAVIS_REPO_SLUG}: $COMMIT_MESSAGE"
 
 # upload the result
