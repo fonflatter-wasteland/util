@@ -22,9 +22,9 @@ cd "$TARGET_REPO_DIR"
 COMMIT_MESSAGE=`git log -1 --pretty='%B' "$TRAVIS_COMMIT"`
 
 # merge content leaving auch dotfiles and README
-git merge --no-ff --no-commit "$BRANCH_NAME"
+git merge --no-ff --no-commit --strategy=recursive --strategy-option=theirs "$BRANCH_NAME"
 git branch -D "$BRANCH_NAME"
-git rm -rf --ignore-unmatch .[!.]* README.md
+find . -maxdepth 1 \( -name '.[!.]*' -o -name 'README.md' \) -exec git checkout HEAD -- {} \;
 git commit --allow-empty -m "${TRAVIS_REPO_SLUG}: $COMMIT_MESSAGE"
 
 # upload the result
