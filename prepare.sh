@@ -8,8 +8,11 @@ set -o errexit
 : ${TARGET_REPO_SLUG:?}
 : ${TRAVIS_BUILD_DIR:?}
 
+key=$1
+initialization_vector=$2
+
 echo "Decrypting private SSH key..."
-openssl aes-256-cbc -K $encrypted_key -iv $encrypted_iv -in "${TRAVIS_BUILD_DIR}/.ssh/id_rsa.enc" -out ~/.ssh/id_rsa -d
+openssl aes-256-cbc -K "${key}" -iv "${initialization_vector}" -in "${TRAVIS_BUILD_DIR}/.ssh/id_rsa.enc" -out ~/.ssh/id_rsa -d
 chmod og-rw ~/.ssh/id_rsa
 
 echo "Setting default git config..."
