@@ -25,7 +25,8 @@ echo "Merging content leaving out dotfiles and README..."
 git merge --no-ff --no-commit --strategy=recursive --strategy-option=theirs "$BRANCH_NAME"
 git branch -D "$BRANCH_NAME"
 git reset HEAD -- .[!.]* README.md
-git commit --allow-empty -m "${TRAVIS_REPO_SLUG}: $COMMIT_MESSAGE"
+# only commit if there is anything to commit
+git diff-index --quiet --cached HEAD || git commit -m "${TRAVIS_REPO_SLUG}: $COMMIT_MESSAGE"
 
 echo "Uploading result..."
 git push
