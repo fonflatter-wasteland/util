@@ -78,7 +78,8 @@ git add --all .
 # only commit if there is anything to commit
 if ! git diff-index --cached --quiet HEAD --
 then
-    git commit --author='Bastian Melnyk <fonflatter[at]gmail.com>' -m 'Export of fonflatter.de'
+    last_post_title=$(grep -oP '#[^"]+' $(find . | sort | tail --lines=1))
+    git commit --author='Bastian Melnyk <fonflatter[at]gmail.com>' -m "Export of fonflatter.de (${last_post_title})"
 else
     echo 'Nothing to commit.'
 fi
