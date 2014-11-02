@@ -23,18 +23,20 @@ cd _posts
 # create subdirectories for each year since 2005
 mkdir $(seq 2005 $(date +'%Y'))
 
-mysql --defaults-extra-file=~/mysql-export.conf <<EOF | while read post_id post_year post_date post_name
+mysql --defaults-extra-file=~/mysql-export.conf <<EOF | while read post_id file_name
 SELECT
-    id                                 AS post_id,
-    DATE_FORMAT(post_date, '%Y')       AS post_year,
-    DATE_FORMAT(post_date, '%Y-%m-%d') AS post_date,
-    post_name                          AS post_name
+    id AS post_id,
+    CONCAT(
+        DATE_FORMAT(post_date, '%Y/%Y-%m-%d'),
+        '-',
+        post_name,
+        '.md'
+    ) AS file_name
 FROM ff_posts
 WHERE (post_status = 'publish') AND (post_title LIKE '#%')
 ORDER BY post_date ASC;
 EOF
 do
-    file_name="${post_year}/${post_date}-${post_name}.md"
     echo "Exporting comic ${file_name} ..."
 
     mysql --defaults-extra-file=~/mysql-export.conf <<EOF > ${file_name}
