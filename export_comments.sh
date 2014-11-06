@@ -36,7 +36,7 @@ mysql --defaults-extra-file=~/mysql-export.conf <<EOF | while read COMMENT_ID FI
     ON (comment_post_ID = ID)
     WHERE (post_status = 'publish') AND (post_title LIKE '#%')
     AND (comment_approved = 1) AND (comment_type = '')
-    ORDER BY post_date ASC;
+    ORDER BY post_date ASC, comment_date_gmt ASC;
 EOF
 do
     echo "Exporting comment ${COMMENT_ID} of comic ${FILE_PATH}/${FILE_NAME} ..."
