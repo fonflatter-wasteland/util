@@ -5,6 +5,8 @@ set -o nounset
 set -o pipefail
 set -o posix
 
+SCRIPT_DIR=$(cd $(dirname $0) && pwd)
+
 OUTPUT_DIR=${HOME}/export/comments-de
 COMMENTS_DIR=_data/comments
 
@@ -65,8 +67,10 @@ do
     # use Unix line endings
     dos2unix --quiet "${FILE_NAME}"
 
+    "${SCRIPT_DIR}"/convert_html_entities.py "${FILE_NAME}"
+
     # add newline to end of file
-    sed --in-place '$a\\' ${FILE_NAME} #' Workaround for BashSupport plugin [Issue 88]
+    sed --in-place '$a\\' "${FILE_NAME}" #' Workaround for BashSupport plugin [Issue 88]
 done
 
 # store exported posts
