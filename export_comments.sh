@@ -62,7 +62,7 @@ EOF
 done
 
 # loop over all exported comments
-find . -name '*.yml' | while read FILE_NAME
+find . -name '*.yml' | sort | while read FILE_NAME
 do
     # use Unix line endings
     dos2unix --quiet "${FILE_NAME}"
