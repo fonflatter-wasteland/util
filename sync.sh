@@ -5,7 +5,7 @@
 set -o nounset
 set -o errexit
 
-BASE_PATH=${PWD}
+BASE_PATH=$1
 
 find ${BASE_PATH} -name '.git' | sed 's|\.git$||' | while read REPOSITORY_PATH
 do
